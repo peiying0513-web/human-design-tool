@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人類圖起點</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: form strip on top, then the summary grid, the planet table and readable explanation cards below. */
+:root {
+  --bg: #F3F4F7;
+  --surface: #FFFFFF;
+  --ink: #1D2433;
+  --muted: #5E6779;
+  --rule: #DADDE5;
+  --track: #E7E9EE;
+  --design: #C2362B;
+  --defined: #E2B04A;
+  --defined-ink: #3B2A05;
+  --accent: #2F4A7A;
+  --pers: #1D2433;
+  --open: #FFFFFF;
+  --gate: #4B2A88;
+  --on-center: #1D1A12;
+  --c-yellow: #F2D35B;
+  --c-green: #7BC85A;
+  --c-brown: #BC9563;
+  --c-red: #D2584B;
+  --font-display: "Noto Serif TC", "Songti TC", serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151C; --surface: #1A1F2A; --ink: #E7E9EF; --muted: #9AA2B4; --rule: #2D3443; --track: #262C38;
+    --design: #EF6A5E; --defined: #CB9A3A; --defined-ink: #1A1203; --accent: #8FA9DA; --pers: #E7E9EF; --open: #232937; --gate: #7E5CC8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151C; --surface: #1A1F2A; --ink: #E7E9EF; --muted: #9AA2B4; --rule: #2D3443; --track: #262C38;
+  --design: #EF6A5E; --defined: #CB9A3A; --defined-ink: #1A1203; --accent: #8FA9DA; --pers: #E7E9EF; --open: #232937; --gate: #7E5CC8; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0;
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: clamp(28px, 5vw, 38px); }
+h2 { font-size: 22px; }
+h3 { font-size: 17px; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 62ch; margin-top: 6px; }
+.label { font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+
+form { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-size: 13px; color: var(--muted); }
+input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; width: 100%; min-width: 0; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; font-weight: 700; background: var(--ink); color: var(--bg); border: 0; border-radius: 6px; padding: 9px 16px; cursor: pointer; }
+button:hover { opacity: .88; }
+.err { grid-column: 1 / -1; color: var(--design); font-size: 14px; }
+
+.banner { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.tag { font-size: 12px; border: 1px solid var(--rule); border-radius: 99px; padding: 1px 10px; color: var(--muted); }
+
+.summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+@media (max-width: 640px) { .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cell { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.cell .v { font-size: 17px; font-weight: 700; }
+.cell .s { font-size: 13px; color: var(--muted); }
+
+.gl-btn { font: inherit; font-family: var(--font-mono); font-weight: 500; background: none; color: var(--ink); border: 1px solid transparent; border-radius: 4px; padding: 1px 6px; cursor: pointer; }
+.gl-btn.d { color: var(--design); }
+.gl-btn:hover { border-color: var(--rule); opacity: 1; }
+.gl-btn[aria-pressed="true"] { border-color: currentColor; background: var(--bg); }
+.lineinfo { margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); display: grid; gap: 6px; }
+.lineinfo h3 { font-size: 18px; }
+.lineinfo .gl-big { font-family: var(--font-mono); margin-right: 6px; }
+.lineinfo .gl-big.d { color: var(--design); }
+.lineinfo dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+.lineinfo dt { color: var(--muted); }
+.lineinfo dd { margin: 0; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.upload { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: grid; gap: 12px; }
+.drop { border: 1.5px dashed var(--rule); border-radius: 8px; padding: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.drop.over { border-color: var(--accent); background: var(--bg); }
+.btn-like { font-weight: 700; background: var(--ink); color: var(--bg); border-radius: 6px; padding: 9px 16px; cursor: pointer; }
+.btn-like:hover { opacity: .88; }
+#img:focus-visible + .btn-like { outline: 2px solid var(--accent); outline-offset: 2px; }
+.link-btn { background: none; color: var(--accent); padding: 0; font-weight: 500; text-decoration: underline; }
+.review { display: grid; gap: 12px; }
+.rv-name { max-width: 260px; }
+.rv-grid { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 6px 10px; align-items: center; max-width: 460px; }
+.rv-grid .h { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+.rv-grid .h.d { color: var(--design); }
+.rv-grid .pl { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.rv-grid input { font-family: var(--font-mono); padding: 5px 8px; }
+.rv-grid input.d { color: var(--design); }
+.rv-grid input[aria-invalid="true"] { border-color: var(--design); }
+.warn { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+.en { display: block; font-family: var(--font-body); font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: .02em; line-height: 1.4; }
+.en.inline { display: inline; }
+
+.sheet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 760px) { .sheet { grid-template-columns: minmax(0, 1fr); } }
+.graph svg { width: 100%; height: auto; display: block; max-width: 400px; margin: 0 auto; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); justify-content: center; margin-top: 8px; }
+.sw { display: inline-block; width: 18px; height: 5px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: middle; margin-right: 5px; background: var(--gate); }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; min-width: 0; }
+
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 4px; border-bottom: 1px solid var(--rule); text-align: left; font-size: 14px; }
+th { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .06em; }
+td.planet { color: var(--muted); }
+td.gl { font-family: var(--font-mono); font-size: 15px; }
+td.d, th.d { color: var(--design); text-align: right; }
+td.p, th.p { text-align: right; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.card .k { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.card .k b { color: var(--ink); font-weight: 500; }
+
+.centers { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.center { border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; background: var(--surface); }
+.center.on { border-color: var(--defined); box-shadow: inset 4px 0 0 var(--defined); }
+.center .st { font-size: 12px; color: var(--muted); }
+.center.on .st { color: var(--ink); }
+.center .q { font-size: 13px; color: var(--muted); }
+
+.chlist { display: grid; gap: 10px; }
+.ch { display: grid; grid-template-columns: 70px minmax(0,1fr); gap: 10px; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.ch:last-child { border-bottom: 0; padding-bottom: 0; }
+.ch .n { font-family: var(--font-mono); font-size: 15px; }
+.ch .src { font-size: 12px; color: var(--muted); }
+.gates { display: flex; flex-wrap: wrap; gap: 6px; }
+.gate { font-family: var(--font-mono); font-size: 13px; border: 1px solid var(--rule); border-radius: 4px; padding: 0 7px; }
+.gate.d { color: var(--design); }
+section { display: grid; gap: 14px; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--rule); padding-top: 16px; display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { .fade { animation: in .35s ease-out; } @keyframes in { from { opacity: .4; } to { opacity: 1; } } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="label">HUMAN DESIGN · 入門</p>
+    <h1>人類圖起點</h1>
+    <p class="lead">輸入出生日期、時間和地點的時區，看看你的類型、策略、內在權威和九大中心。資料只在你的瀏覽器裡計算，不會被傳送或儲存。</p>
+  </header>
+
+  <form id="f" novalidate>
+    <div class="field"><label for="nm">名字（可不填）</label><input id="nm" placeholder="例如：小安" maxlength="20"></div>
+    <div class="field"><label for="dt">出生日期</label><input id="dt" type="date" required min="1900-01-01" max="2100-12-31"></div>
+    <div class="field"><label for="tm">出生時間</label><input id="tm" type="time" required></div>
+    <div class="field"><label for="tz">出生地時區</label><select id="tz"></select></div>
+    <button type="submit">畫出我的圖</button>
+    <p class="err" id="err" hidden></p>
+  </form>
+
+  <section class="upload" aria-labelledby="upH">
+    <div class="up-head">
+      <h2 id="upH">已經有身體圖了？</h2>
+      <p class="lead">上傳身體圖的圖片，自動讀出左右兩欄 26 個「閘門.爻」，核對後就能畫圖，不需要出生時間。圖片只在你的裝置上辨識，不會上傳。</p>
+    </div>
+    <div class="drop" id="drop">
+      <input type="file" id="img" accept="image/*" class="sr-only">
+      <label for="img" class="btn-like">選擇身體圖圖片</label>
+      <span class="src">也可以把圖片拖到這裡，或直接貼上截圖</span>
+      <button type="button" id="manual" class="link-btn">改用手動輸入</button>
+    </div>
+    <p id="ocrStatus" class="src" aria-live="polite"></p>
+    <form id="review" class="review" hidden novalidate>
+      <p class="src">請對照你的圖檢查每一格，辨識錯誤的地方直接修改。格式是「閘門.爻」，例如 23.4。</p>
+      <div class="rv-name field"><label for="rvName">名字（可不填）</label><input id="rvName" maxlength="20" placeholder="例如：小安"></div>
+      <div class="rv-grid" id="rvGrid"></div>
+      <p class="err" id="rvErr" hidden></p>
+      <ul class="warn" id="rvWarn" hidden></ul>
+      <div><button type="submit">用這些資料畫圖</button></div>
+    </form>
+  </section>
+
+  <main id="out" class="wrap" aria-live="polite"></main>
+
+  <footer>
+    <p>上傳圖檔時，文字辨識使用 Tesseract.js，在你的裝置上執行。</p>
+    <p>計算方式：依出生時刻與出生前太陽移動 88 度的時刻，算出 13 個星體所在的閘門與爻。出生時間越準確，結果越可靠；如果時間不確定，月亮和人生角色最容易改變。</p>
+    <p>這是學習用的入門工具。通道名稱與主題依 Ra Uru Hu 的定義；能量中心與類型的說明依一階、二階課堂筆記的用語整理；爻名與頁碼取自 The Rave I’Ching Line Companion，只列名稱，內容請參閱原書。人生角色依 Ra 在 The Rave I’Ching Line Companion 對六個爻的說明整理；定義為概略介紹。想深入了解，建議找合格的人類圖分析師，或用官方工具核對。人類圖系統由 Ra Uru Hu 創立。</p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script>
+// ---------- engine ----------
+const HD = (() => {
+  const A = Astronomy;
+  const ORDER = [41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
+  const START = 302;
+  const norm = x => ((x % 360) + 360) % 360;
+  function gateLine(lon) {
+    const off = norm(lon - START), gi = Math.floor(off / 5.625);
+    return { gate: ORDER[gi], line: Math.floor((off - gi * 5.625) / 0.9375) + 1 };
+  }
+  const sunLon = t => A.SunPosition(t).elon;
+  const bodyLon = (b, t) => A.Ecliptic(A.GeoVector(b, t, true)).elon;
+  function trueNode(t) {
+    const e = A.RotateState(A.Rotation_EQJ_ECT(t), A.GeoMoonState(t));
+    const hx = e.y * e.vz - e.z * e.vy, hy = e.z * e.vx - e.x * e.vz;
+    return norm(Math.atan2(hx, -hy) * 180 / Math.PI);
+  }
+  const PLANETS = ['Sun','Earth','Moon','NorthNode','SouthNode','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  function positions(date) {
+    const t = A.MakeTime(date), sun = sunLon(t), node = trueNode(t);
+    const lon = { Sun: sun, Earth: sun + 180, Moon: bodyLon(A.Body.Moon, t), NorthNode: node, SouthNode: node + 180,
+      Mercury: bodyLon(A.Body.Mercury, t), Venus: bodyLon(A.Body.Venus, t), Mars: bodyLon(A.Body.Mars, t),
+      Jupiter: bodyLon(A.Body.Jupiter, t), Saturn: bodyLon(A.Body.Saturn, t), Uranus: bodyLon(A.Body.Uranus, t),
+      Neptune: bodyLon(A.Body.Neptune, t), Pluto: bodyLon(A.Body.Pluto, t) };
+    const out = {}; PLANETS.forEach(p => out[p] = gateLine(lon[p])); return out;
+  }
+  function designDate(birth) {
+    const target = norm(sunLon(A.MakeTime(birth)) - 88);
+    let d = new Date(birth.getTime() - 89 * 864e5);
+    for (let i = 0; i < 30; i++) {
+      const diff = norm(target - sunLon(A.MakeTime(d)) + 180) - 180;
+      if (Math.abs(diff) < 1e-7) break;
+      d = new Date(d.getTime() + diff / 0.9856 * 864e5);
+    }
+    return d;
+  }
+  const CENTER_GATES = { Head: [64,61,63], Ajna: [47,24,4,17,43,11], Throat: [62,23,56,35,12,45,33,8,31,20,16], G: [7,1,13,10,25,15,46,2], Heart: [21,40,26,51], Sacral: [5,14,29,59,9,3,42,27,34], SolarPlexus: [36,22,37,6,49,55,30], Spleen: [48,57,44,50,32,28,18], Root: [53,60,52,19,39,41,58,38,54] };
+  const GATE_CENTER = {}; for (const [c, gs] of Object.entries(CENTER_GATES)) gs.forEach(g => GATE_CENTER[g] = c);
+  const CHANNELS = [[1,8],[2,14],[3,60],[4,63],[5,15],[6,59],[7,31],[9,52],[10,20],[10,34],[10,57],[11,56],[12,22],[13,33],[16,48],[17,62],[18,58],[19,49],[20,34],[20,57],[21,45],[23,43],[24,61],[25,51],[26,44],[27,50],[28,38],[29,46],[30,41],[32,54],[34,57],[35,36],[37,40],[39,55],[42,53],[47,64]];
+  const MOTORS = ['Sacral','SolarPlexus','Heart','Root'];
+  function analyze(birth) {
+    const dd = designDate(birth);
+    return Object.assign(analyzeActs(positions(birth), positions(dd)), { birth, design: dd });
+  }
+  function analyzeActs(pers, des) {
+    const gates = {};
+    PLANETS.forEach(p => { (gates[pers[p].gate] ||= { p: false, d: false }).p = true; (gates[des[p].gate] ||= { p: false, d: false }).d = true; });
+    const channels = CHANNELS.filter(([a, b]) => gates[a] && gates[b]);
+    const defined = new Set(); channels.forEach(([a, b]) => { defined.add(GATE_CENTER[a]); defined.add(GATE_CENTER[b]); });
+    const adj = {}; defined.forEach(c => adj[c] = new Set());
+    channels.forEach(([a, b]) => { const x = GATE_CENTER[a], y = GATE_CENTER[b]; adj[x].add(y); adj[y].add(x); });
+    const comp = {}; let n = 0;
+    defined.forEach(c => { if (comp[c] !== undefined) return; const st = [c]; comp[c] = n; while (st.length) { const u = st.pop(); adj[u].forEach(v => { if (comp[v] === undefined) { comp[v] = n; st.push(v); } }); } n++; });
+    const connected = (x, y) => defined.has(x) && defined.has(y) && comp[x] === comp[y];
+    const m2t = MOTORS.some(m => connected(m, 'Throat'));
+    let type;
+    if (!defined.size) type = 'Reflector';
+    else if (defined.has('Sacral')) type = m2t ? 'ManifestingGenerator' : 'Generator';
+    else type = m2t ? 'Manifestor' : 'Projector';
+    let authority;
+    if (defined.has('SolarPlexus')) authority = 'Emotional';
+    else if (defined.has('Sacral')) authority = 'Sacral';
+    else if (defined.has('Spleen')) authority = 'Splenic';
+    else if (defined.has('Heart')) authority = connected('Heart', 'Throat') ? 'EgoManifested' : 'EgoProjected';
+    else if (defined.has('G') && connected('G', 'Throat')) authority = 'SelfProjected';
+    else if (defined.size) authority = 'Mental';
+    else authority = 'Lunar';
+    const profile = [pers.Sun.line, des.Sun.line], pk = profile.join('/');
+    const geometry = pk === '4/1' ? 'Juxtaposition' : (['5/1','5/2','6/2','6/3'].includes(pk) ? 'LeftAngle' : 'RightAngle');
+    return { birth: null, design: null, pers, des, gates, channels, defined: new Set(defined), definition: n, type, authority, profile, geometry,
+      cross: [pers.Sun.gate, pers.Earth.gate, des.Sun.gate, des.Earth.gate] };
+  }
+  function zonedToUtc(y, mo, d, h, mi, tz) {
+    const guess = Date.UTC(y, mo - 1, d, h, mi);
+    const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const off = ms => { const p = Object.fromEntries(fmt.formatToParts(new Date(ms)).map(x => [x.type, x.value])); return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - ms; };
+    let t = guess - off(guess); t = guess - off(t); return new Date(t);
+  }
+  const opposite = g => ORDER[(ORDER.indexOf(g) + 32) % 64];
+  return { analyze, analyzeActs, opposite, zonedToUtc, CENTER_GATES, GATE_CENTER, CHANNELS, PLANETS };
+})();
+
+// ---------- content (wording follows the level 1 / level 2 course notes) ----------
+const TYPES = {
+  Generator: { n: '生產者', strategy: '等待回應', sig: '滿足', ns: '挫敗', text: '能量類型，有穩定、持續的薦骨能量。腳踏實地地回應生命：有時候腦袋不想做，身體卻很有回應，把回應轉化成動能，就會變得想做。' },
+  ManifestingGenerator: { n: '顯示生產者', strategy: '等待回應', sig: '滿足', ns: '挫敗', text: '能量類型，薦骨有定義，動力中心也接到喉嚨，速度快。透過薦骨的回應來運作，回應之後、行動之前先告知身邊的人，阻力會少很多。' },
+  Manifestor: { n: '顯示者', strategy: '行動前告知', sig: '平靜', ns: '憤怒', text: '喉嚨接到動力中心，能夠發起。透過告知和發起帶來影響力：行動前先告知會受影響的人，就能減少阻力。' },
+  Projector: { n: '投射者', strategy: '等待被邀請', sig: '成功', ns: '苦澀', text: '透過認識這個世界來認識自己，像一台投影機。擅長透過計劃，建議對的人在對的位置上，提高效能。要動起來，身邊一定要有生產者；重大的事等待被邀請，才能運作得更好。' },
+  Reflector: { n: '反映者', strategy: '等待一個月亮週期（約 28 天）', sig: '驚喜', ns: '失望', text: '「我今天是誰？」九個能量中心都開放，跟著月亮約 28 天的循環體驗不同的變化，反應整個環境的狀態。' }
+};
+const AUTH = {
+  Emotional: { n: '情緒權威', text: '只要情緒中心有定義，就是情緒權威。情緒有高有低，當下沒有真相；重大決定要等待清明，在情緒平穩時仍然覺得對，才是你的答案。' },
+  Sacral: { n: '薦骨權威', text: '透過薦骨的回應來決定：身體當下發出「嗯哼」或「嗯嗯」的聲音。有時候腦袋不想做，身體卻很有回應，請相信身體。' },
+  Splenic: { n: '脾（直覺）權威', text: '答案是當下一閃而過的直覺，和生存、安全有關，而且只說一次。相信第一時間的感覺。' },
+  EgoManifested: { n: '意志力權威', text: '心中心的權威。聽自己說出口的「我想要」「我願意」，真心想要、能夠承諾的事，才值得投入。' },
+  EgoProjected: { n: '意志力權威', text: '心中心的權威。把事情說出來，聽自己的話裡有沒有「我想要」；真心想要、能夠承諾的事，才值得投入。' },
+  SelfProjected: { n: 'G 中心權威（自我投射）', text: '把正在考慮的事說給信任的人聽，聽自己說出口的方向與認同。' },
+  Mental: { n: '環境／無內在權威', text: '沒有固定的內在權威。待在對的環境裡，和信任的人討論，從自己說出的話中聽見清晰。' },
+  Lunar: { n: '月亮權威（無權威）', text: '等待月亮週期約 28 天，在不同的日子感受同一個決定，並和信任的人討論。' }
+};
+// Ra, The Rave I'Ching Line Companion, "A Guide to the 384 Lines" (pp. 9-13)
+// n: [中文名稱, 說明, 關鍵字]
+const LINES = {
+  1: ['研究者', '房子的地基。往內看，先弄懂事物本身的本質，打好穩固的基礎。基礎需要時間建立，一開始常覺得自己不夠穩，在強與弱之間來回。', '內省 Introspection'],
+  2: ['隱士', '一樓的窗戶，看出去的是對面，而不是自己。不太看得見自己的本質，卻會自然地把特質向外投射；別人看得到，自己未必清楚。', '投射 Projection'],
+  3: ['烈士', '走到下半部的終點，開始意識到對面的存在會影響自己，必須去適應。關係和連結會建立又斷開，不穩定，透過嘗試與調整來學習。', '適應 Adaptation'],
+  4: ['機會主義者', '上半部的地基。不再內省或摸索，而是把自己某個固定的特質，傳遞到對面的人身上。非常固定、單一軌道。', '外化 Externalization'],
+  5: ['異端者', '一個過程的完成。已經清楚自己的本質，想把它推廣到整個群體。在紀律與反叛之間，對世界有很大的影響力。', '普及 Universalization'],
+  6: ['角色模範', '站在屋頂上，已經不在房子裡。看得很遠，想知道整體是什麼樣子，準備好跳到下一個階段。', '過渡 Transition']
+};
+const GEOMETRY = {
+  RightAngle: ['右角', '人生主要在走自己的路，完成自己的過程。'],
+  Juxtaposition: ['並列', '人生是一條固定、獨特的軌道，沿著自己的方式前進。'],
+  LeftAngle: ['左角', '人生和他人的相遇緊密交織，許多經歷來自與人的連結。']
+};
+const DEFN = {
+  0: ['無定義', '九個能量中心都開放，深深感受環境。'],
+  1: ['一分人', '能量自成一體，習慣獨立處理事情。'],
+  2: ['二分人', '能量分成兩區，容易被能「接起」兩區的人吸引，做決定需要一點時間。'],
+  3: ['三分人', '能量分成三區，在多元的人群中比較自在，需要時間整合。'],
+  4: ['四分人', '能量分成四區，需要充分的時間，不要被催促。']
+};
+const CENTERS = {
+  Head: { n: '頭頂中心', cat: '壓力中心', theme: '靈感、疑問', on: '有固定的思考壓力和靈感來源。', off: '容易急著回答別人的問題。', q: '我是否在想不重要的事？' },
+  Ajna: { n: 'Ajna 中心', cat: '覺察中心', theme: '概念化、處理資訊', on: '有固定的思考方式。', off: '像海綿一樣吸收資訊，思考有彈性；容易想裝得很確定。', q: '我是否想證明自己很確定？' },
+  Throat: { n: '喉嚨中心', cat: '顯化中心', theme: '表達、行動、吸引注意力', on: '有固定的表達方法。', off: '不太確定要怎麼說話，無法接受沉默；會學別人說話，見人說人話。', q: '我是否試圖得到注意力？' },
+  G: { n: 'G 中心', cat: '身分中心', theme: '方向、愛、認同', on: '有穩定的自我認同與方向。', off: '方向與認同來自環境，近朱者赤、近墨者黑。', q: '我是否還在尋找愛與方向？' },
+  Heart: { n: '心中心（意志力）', cat: '動力中心', theme: '價值、承諾、物質', on: '有意志力，能守住承諾。', off: '容易答應別人，想證明自己。', q: '我是否想證明自己的價值？' },
+  Sacral: { n: '薦骨中心', cat: '動力中心', theme: '生命力、工作、性', on: '有持續的工作與生命能量。', off: '不知道何時足夠，容易借用別人的能量而過度消耗。', q: '我知道何時足夠嗎？' },
+  SolarPlexus: { n: '情緒中心（太陽神經叢）', cat: '動力中心（未來的覺察中心）', theme: '情緒波、感受', on: '有自己的情緒波，需要等待清明。', off: '會放大別人的情緒，傾向迴避衝突。', q: '我是否在逃避衝突與真相？' },
+  Spleen: { n: '脾中心', cat: '覺察中心', theme: '生存、直覺、健康', on: '有穩定的安全感和直覺。', off: '容易抓著不好的人事物不放。', q: '我是否抓著對我不好的東西？' },
+  Root: { n: '根部中心', cat: '壓力中心', theme: '壓力、腎上腺素、時間感', on: '有固定的壓力節奏。', off: '容易急著把事情做完，以擺脫壓力。', q: '我是否急著把事情做完？' }
+};
+const CENTER_ORDER = ['Head','Ajna','Throat','G','Heart','Sacral','SolarPlexus','Spleen','Root'];
+const CH_TYPE = { G: '生產者通道（Generated）', P: '投射者通道（Projected）', M: '顯示者通道（Manifested）', MG: '顯示生產者通道（Manifesting Generator）' };
+// Ra Uru Hu's channel names and keynotes ("a design of ...")
+// key: [中文名稱, Ra 的名稱, 迴路, 通道類型, 中文主題, Ra 的主題]
+const CH = {
+  '24-61': ['覺察', 'Awareness', '個體・覺知迴路', 'P', '思考者', 'A Thinker'],
+  '23-43': ['結構化', 'Structuring', '個體・覺知迴路', 'P', '個體性（從天才到怪胎）', 'Individuality'],
+  '3-60': ['突變', 'Mutation', '個體・覺知迴路', 'G', '起伏波動、帶來開始的能量', 'Energy which fluctuates and initiates'],
+  '2-14': ['節拍', 'The Beat', '個體・覺知迴路', 'G', '掌管鑰匙的人', 'A Keeper of the Keys'],
+  '1-8': ['啟發', 'Inspiration', '個體・覺知迴路', 'P', '有創意的角色模範', 'A Creative Role Model'],
+  '28-38': ['掙扎', 'Struggle', '個體・覺知迴路', 'P', '固執', 'Stubbornness'],
+  '20-57': ['腦波', 'The Brainwave', '個體・覺知迴路', 'P', '穿透性的覺察', 'Penetrating Awareness'],
+  '39-55': ['情緒', 'Emoting', '個體・覺知迴路', 'P', '喜怒無常', 'Moodiness'],
+  '12-22': ['開放', 'Openness', '個體・覺知迴路', 'M', '社交的存在', 'A Social Being'],
+  '10-34': ['探索', 'Exploration', '個體・中央迴路', 'G', '依循自己的信念', 'Following One’s Convictions'],
+  '25-51': ['發起', 'Initiation', '個體・中央迴路', 'P', '需要成為第一', 'Needing to be First'],
+  '4-63': ['邏輯', 'Logic', '集體・理解（邏輯）迴路', 'P', '頭腦的安心夾雜著懷疑', 'Mental Ease Mixed with Doubt'],
+  '17-62': ['接納', 'Acceptance', '集體・理解（邏輯）迴路', 'P', '有組織能力的存在', 'An Organizational Being'],
+  '18-58': ['判斷', 'Judgment', '集體・理解（邏輯）迴路', 'P', '永不滿足', 'Insatiability'],
+  '16-48': ['波長', 'The Wavelength', '集體・理解（邏輯）迴路', 'P', '才華', 'Talent'],
+  '9-52': ['專注', 'Concentration', '集體・理解（邏輯）迴路', 'G', '決心', 'Determination'],
+  '5-15': ['韻律', 'Rhythm', '集體・理解（邏輯）迴路', 'G', '在流動之中', 'Being in the Flow'],
+  '7-31': ['阿爾法', 'The Alpha', '集體・理解（邏輯）迴路', 'P', '領導力，無論好壞', 'Leadership for Good or Bad'],
+  '47-64': ['抽象', 'Abstraction', '集體・感知（抽象）迴路', 'P', '頭腦活動夾雜著清明', 'Mental Activity Mixed with Clarity'],
+  '11-56': ['好奇', 'Curiosity', '集體・感知（抽象）迴路', 'P', '追尋者', 'A Searcher'],
+  '30-41': ['認可', 'Recognition', '集體・感知（抽象）迴路', 'P', '專注的能量', 'Focused Energy'],
+  '35-36': ['無常', 'Transitoriness', '集體・感知（抽象）迴路', 'M', '萬事通', 'A Jack of All Trades'],
+  '42-53': ['成熟', 'Maturation', '集體・感知（抽象）迴路', 'G', '平衡的發展', 'Balanced Development'],
+  '29-46': ['發現', 'Discovery', '集體・感知（抽象）迴路', 'G', '在別人失敗之處成功', 'Succeeding Where Others Fail'],
+  '13-33': ['浪子', 'The Prodigal', '集體・感知（抽象）迴路', 'P', '見證者', 'A Witness'],
+  '32-54': ['蛻變', 'Transformation', '部落・意志力迴路', 'P', '被驅動', 'Being Driven'],
+  '26-44': ['臣服', 'Surrender', '部落・意志力迴路', 'P', '傳遞者', 'A Transmitter'],
+  '19-49': ['綜合', 'Synthesis', '部落・意志力迴路', 'P', '敏感', 'Sensitivity'],
+  '37-40': ['社群', 'Community', '部落・意志力迴路', 'P', '尋找整體的一部分', 'A Part Seeking a Whole'],
+  '21-45': ['金錢', 'Money', '部落・意志力迴路', 'M', '物質主義者', 'A Materialist'],
+  '6-59': ['交配', 'Mating', '部落・防護迴路', 'G', '專注於繁衍', 'Focused on Reproduction'],
+  '27-50': ['保存', 'Preservation', '部落・防護迴路', 'G', '監護', 'Custodianship'],
+  '34-57': ['力量', 'Power', '整合通道群', 'G', '原型', 'An Archetype'],
+  '10-57': ['完美形式', 'Perfected Form', '整合通道群', 'P', '生存', 'Survival'],
+  '10-20': ['覺醒', 'Awakening', '整合通道群', 'P', '對更高原則的承諾', 'Commitment to Higher Principles'],
+  '20-34': ['魅力', 'Charisma', '整合通道群', 'MG', '想法必須化為行動', 'Where Thoughts Must Become Deeds']
+};
+const PLANET_ZH = { Sun: ['☉','太陽'], Earth: ['⊕','地球'], Moon: ['☽','月亮'], NorthNode: ['☊','月之北交'], SouthNode: ['☋','月之南交'], Mercury: ['☿','水星'], Venus: ['♀','金星'], Mars: ['♂','火星'], Jupiter: ['♃','木星'], Saturn: ['♄','土星'], Uranus: ['♅','天王星'], Neptune: ['♆','海王星'], Pluto: ['♇','冥王星'] };
+const TZS = [['Asia/Taipei','台灣'],['Asia/Hong_Kong','香港'],['Asia/Macau','澳門'],['Asia/Shanghai','中國'],['Asia/Singapore','新加坡'],['Asia/Kuala_Lumpur','馬來西亞'],['Asia/Tokyo','日本'],['Asia/Seoul','韓國'],['Asia/Bangkok','泰國'],['Asia/Ho_Chi_Minh','越南'],['Asia/Manila','菲律賓'],['Australia/Sydney','澳洲雪梨'],['Australia/Melbourne','澳洲墨爾本'],['Australia/Perth','澳洲伯斯'],['Pacific/Auckland','紐西蘭'],['Europe/London','英國'],['Europe/Paris','法國'],['Europe/Berlin','德國'],['Europe/Amsterdam','荷蘭'],['America/New_York','美東'],['America/Chicago','美中'],['America/Denver','美山地'],['America/Los_Angeles','美西'],['America/Vancouver','加拿大溫哥華'],['America/Toronto','加拿大多倫多']];
+
+// ---------- bodygraph (layout follows the standard chart) ----------
+const BG = (() => {
+  const SHAPES = {
+    Head: 'M223,35 L257,104 L189,104 Z',
+    Ajna: 'M189,119 L257,119 L223,187 Z',
+    Throat: 'M196,209 H252 V264 H196 Z',
+    G: 'M223,285 L262,323 L223,362 L185,323 Z',
+    Heart: 'M278,343 L315,376 L250,376 Z',
+    Spleen: 'M66,398 L132,437 L66,476 Z',
+    SolarPlexus: 'M382,398 L382,476 L315,437 Z',
+    Sacral: 'M197,433 H252 V488 H197 Z',
+    Root: 'M197,510 H252 V564 H197 Z'
+  };
+  const FILL = { Head: 'var(--c-yellow)', Ajna: 'var(--c-green)', Throat: 'var(--c-brown)', G: 'var(--c-yellow)', Heart: 'var(--c-red)', Sacral: 'var(--c-red)', SolarPlexus: 'var(--c-brown)', Spleen: 'var(--c-brown)', Root: 'var(--c-brown)' };
+  // where each gate number sits
+  const LABEL = {
+    64: [208, 96], 61: [223, 96], 63: [238, 96],
+    47: [207, 128], 24: [223, 128], 4: [238, 128], 17: [216, 152], 11: [231, 152], 43: [223, 168],
+    62: [208, 217], 23: [224, 217], 56: [241, 217], 16: [205, 229], 35: [243, 229], 20: [205, 246], 12: [243, 245],
+    31: [204, 258], 8: [216, 258], 33: [229, 258], 45: [243, 258],
+    1: [223, 296], 7: [214, 307], 13: [232, 307], 10: [196, 323], 25: [249, 330], 15: [213, 340], 46: [233, 340], 2: [223, 351],
+    21: [284, 357], 51: [275, 364], 26: [264, 371], 40: [295, 371],
+    48: [74, 411], 57: [87, 419], 44: [101, 427], 50: [116, 437], 32: [98, 447], 28: [85, 455], 18: [74, 463],
+    36: [374, 411], 22: [360, 420], 37: [345, 428], 6: [329, 437], 49: [348, 447], 55: [362, 455], 30: [374, 463],
+    5: [208, 442], 14: [223, 442], 29: [238, 442], 34: [206, 454], 27: [206, 470], 59: [243, 468], 42: [208, 481], 3: [223, 481], 9: [237, 481],
+    53: [208, 518], 60: [224, 518], 52: [241, 518], 54: [206, 530], 19: [243, 530], 38: [206, 543], 39: [243, 543], 58: [206, 556], 41: [243, 556]
+  };
+  // where each gate's channel line starts (inside the center; the center shape covers the inner part)
+  const L = 214, M = 223, R = 232;
+  const END = Object.assign({}, LABEL, {
+    64: [L, 96], 61: [M, 96], 63: [R, 96], 47: [L, 128], 24: [M, 128], 4: [R, 128],
+    17: [L, 152], 43: [M, 168], 11: [R, 152], 62: [L, 217], 23: [M, 217], 56: [R, 217],
+    31: [L, 258], 8: [M, 258], 33: [R, 258], 7: [L, 307], 1: [M, 296], 13: [R, 307],
+    15: [L, 340], 2: [M, 351], 46: [R, 340], 5: [L, 442], 14: [M, 442], 29: [R, 442],
+    42: [L, 481], 3: [M, 481], 9: [R, 481], 53: [L, 518], 60: [M, 518], 52: [R, 518],
+    16: [200, 229], 20: [200, 246], 35: [248, 229], 12: [248, 245], 45: [246, 258],
+    10: [192, 323], 34: [202, 454], 27: [202, 470], 59: [247, 468],
+    54: [202, 530], 38: [202, 543], 58: [202, 556], 19: [247, 530], 39: [247, 543], 41: [247, 556]
+  });
+  const HUB = [152, 323]; // the integration channels meet left of the G center
+  const VIA = { '10-20': HUB, '10-34': HUB, '10-57': HUB, '20-34': HUB, '34-57': [150, 440] };
+
+  function draw(r) {
+    let track = '', act = '';
+    for (const [a, b] of HD.CHANNELS) {
+      const k = `${a}-${b}`, A = END[a], B = END[b], V = VIA[k];
+      const mid = V || [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const d = V ? `M${A} L${V} L${B}` : `M${A} L${B}`;
+      track += `<path d="${d}" fill="none" stroke="var(--rule)" stroke-width="7.5" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--track)" stroke-width="5" stroke-linejoin="round"/>`;
+      for (const [g, P] of [[a, A], [b, B]]) {
+        const st = r.gates[g]; if (!st) continue;
+        const seg = `M${P} L${mid}`;
+        if (st.d) act += `<path d="${seg}" stroke="var(--design)" stroke-width="5"/>`;
+        if (st.p) act += `<path d="${seg}" stroke="var(--pers)" stroke-width="5"${st.d ? ' stroke-dasharray="3.5 3.5"' : ''}/>`;
+      }
+    }
+    let centers = '', labels = '';
+    for (const c of CENTER_ORDER) {
+      const on = r.defined.has(c);
+      centers += `<path d="${SHAPES[c]}" fill="${on ? FILL[c] : 'var(--open)'}" stroke="${on ? 'rgba(0,0,0,.25)' : 'var(--muted)'}" stroke-width="1" stroke-linejoin="round"><title>${CENTERS[c].n}：${on ? '有定義' : '開放'}</title></path>`;
+      for (const g of HD.CENTER_GATES[c]) {
+        const [x, y] = LABEL[g], st = r.gates[g];
+        if (st) labels += `<circle cx="${x}" cy="${y - 2.6}" r="5.6" fill="var(--gate)"/>`;
+        labels += `<text x="${x}" y="${y}" text-anchor="middle" font-size="${g > 9 ? 6.6 : 7}" font-weight="700" fill="${st ? '#fff' : (on ? 'var(--on-center)' : 'var(--ink)')}">${g}</text>`;
+      }
+    }
+    return `<svg viewBox="40 22 370 556" role="img" aria-label="身體圖：有定義的能量中心上色，啟動的閘門加上圓圈" font-family="IBM Plex Mono, ui-monospace, monospace">${track}${act}${centers}${labels}</svg>`;
+  }
+  return { draw };
+})();
+
+// ---------- render ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function fmtLocal(d, tz) { return new Intl.DateTimeFormat('zh-TW', { timeZone: tz, dateStyle: 'medium', timeStyle: 'short' }).format(d); }
+
+// Gate and line titles with PDF page numbers, from The Rave I’Ching Line Companion (titles only)
+const GATE_INFO = {"1":["乾","The Creative",14],"2":["坤","The Receptive",24],"3":["屯","Difficulty at the beginning",34],"4":["蒙","Youthful Folly",43],"5":["需","Waiting",49],"6":["訟","Conflict",57],"7":["師","The Army",66],"8":["比","Holding Together",76],"9":["小畜","The Taming Power of The Small",84],"10":["履","Treading",91],"11":["泰","Peace",104],"12":["否","Standstill",111],"13":["同人","The Fellowship of Man",117],"14":["大有","Possession in Great Measure",126],"15":["謙","Modesty",132],"16":["豫","Enthusiasm",141],"17":["隨","Following",149],"18":["蠱","Work on what has been Spoilt",157],"19":["臨","Approach",163],"20":["觀","Contemplation",173],"21":["噬嗑","Biting Through",180],"22":["賁","Grace",188],"23":["剝","Splitting Apart",194],"24":["復","Returning",201],"25":["無妄","Innocence",207],"26":["大畜","The Taming Power of the Great",218],"27":["頤","Nourishment",228],"28":["大過","Preponderance of the Great",237],"29":["坎","The Abysmal",242],"30":["離","Clinging Fire",252],"31":["咸","Influence",259],"32":["恆","Duration",267],"33":["遯","Retreat",276],"34":["大壯","The Power of the Great",286],"35":["晉","Progress",292],"36":["明夷","Darkening of the Light",299],"37":["家人","The Family",306],"38":["睽","Opposition",312],"39":["蹇","Obstruction",319],"40":["解","Deliverance",329],"41":["損","Decrease",339],"42":["益","Increase",354],"43":["夬","Breakthrough",361],"44":["姤","Coming to Meet",367],"45":["萃","Gathering Together",375],"46":["升","Pushing Upward",382],"47":["困","Oppression",392],"48":["井","The Well",399],"49":["革","Revolution",408],"50":["鼎","The Cauldron",415],"51":["震","The Arousing",423],"52":["艮","Keeping Still, Mountain",431],"53":["漸","Development",440],"54":["歸妹","The Marrying Maiden",448],"55":["豐","Abundance",455],"56":["旅","The Wanderer",463],"57":["巽","The Gentle",476],"58":["兌","The Joyous",482],"59":["渙","Dispersion",490],"60":["節","Limitation",499],"61":["中孚","Inner Truth",507],"62":["小過","Preponderance of the Small",516],"63":["既濟","After Completion",528],"64":["未濟","Before Completion",537]};
+const LINE_INFO = {"1.1":["Creation is independent of will",15],"1.2":["Love is light",16],"1.3":["The energy to sustain creative work",17],"1.4":["Aloneness as the medium of creativity",19],"1.5":["Attracting society with creation",20],"1.6":["Objectivity",22],"2.1":["Intuition",25],"2.2":["Genius",25],"2.3":["Patience",26],"2.4":["Secretiveness",28],"2.5":["Intelligent application",29],"2.6":["Fixation",30],"3.1":["Synthesis",34],"3.2":["Immaturity",35],"3.3":["Survival",36],"3.4":["Charisma",37],"3.5":["Victimization",39],"3.6":["Surrender",40],"4.1":["Pleasure",44],"4.2":["Acceptance",44],"4.3":["Irresponsibility",45],"4.4":["The Liar",45],"4.5":["Seduction",46],"4.6":["Excess",47],"5.1":["Perseverance",49],"5.2":["Inner Peace",50],"5.3":["Compulsiveness",51],"5.4":["The Hunter",52],"5.5":["Joy",53],"5.6":["Yielding",54],"6.1":["Retreat",58],"6.2":["The Guerilla",59],"6.3":["Allegiance",60],"6.4":["Triumph",61],"6.5":["Arbitration",63],"6.6":["The Peacemaker",63],"7.1":["The Authoritarian",67],"7.2":["The Democrat",68],"7.3":["The Anarchist",70],"7.4":["The Abdicator",70],"7.5":["The General",72],"7.6":["The Administrator",74],"8.1":["Honesty",76],"8.2":["Service",77],"8.3":["The Phoney",78],"8.4":["Respect",79],"8.5":["Dharma",81],"8.6":["Communion",82],"9.1":["Sensibility",84],"9.2":["Misery loves company",85],"9.3":["The Straw that breaks the camel’s back",86],"9.4":["Dedication",87],"9.5":["Faith",88],"9.6":["Gratitude",89],"10.1":["Modesty",92],"10.2":["The Hermit",93],"10.3":["The Martyr",94],"10.4":["The Opportunist",98],"10.5":["The Heretic",99],"10.6":["The Role Model",100],"11.1":["Attunement",104],"11.2":["Rigor",105],"11.3":["The Realist",106],"11.4":["The Teacher",107],"11.5":["The Philanthropist",108],"11.6":["Adaptability",109],"12.1":["The Monk",111],"12.2":["Purification",112],"12.3":["Confession",113],"12.4":["The Prophet",114],"12.5":["The Pragmatist",115],"12.6":["Metamorphosis",116],"13.1":["Empathy",118],"13.2":["Bigotry",118],"13.3":["Pessimism",120],"13.4":["Fatigue",121],"13.5":["The Savior",123],"13.6":["The Optimist",124],"14.1":["Money isn’t everything",126],"14.2":["Management",127],"14.3":["Service",127],"14.4":["Security",128],"14.5":["Arrogance",129],"14.6":["Humility",130],"15.1":["Duty",133],"15.2":["Influence",134],"15.3":["Ego inflation",135],"15.4":["The Wallflower",136],"15.5":["Sensitivity",137],"15.6":["Self-defense",138],"16.1":["Delusion",142],"16.2":["The Cynic",143],"16.3":["Independence",144],"16.4":["The Leader",145],"16.5":["The Grinch",146],"16.6":["Gullibility",147],"17.1":["Openness",150],"17.2":["Discrimination",151],"17.3":["Understanding",152],"17.4":["The Personnel manager",152],"17.5":["No man is an island",153],"17.6":["The Bodhisattva",155],"18.1":["Conservatism",157],"18.2":["Terminal disease",158],"18.3":["The Zealot",159],"18.4":["The Incompetent",160],"18.5":["Therapy",161],"18.6":["Buddhahood",161],"19.1":["Interdependence",164],"19.2":["Service",165],"19.3":["Dedication",166],"19.4":["The Team Player",168],"19.5":["Sacrifice",168],"19.6":["The Recluse",170],"20.1":["Superficiality",173],"20.2":["The Dogmatist",174],"20.3":["Self-awareness",174],"20.4":["Application",176],"20.5":["Realism",176],"20.6":["Wisdom",177],"21.1":["Warning",181],"21.2":["Might is right",181],"21.3":["Powerlessness",182],"21.4":["Strategy",183],"21.5":["Objectivity",184],"21.6":["Chaos",186],"22.1":["Second class ticket",189],"22.2":["Charm school",189],"22.3":["The Enchanter",190],"22.4":["Sensitivity",191],"22.5":["Directness",192],"22.6":["Maturity",193],"23.1":["Proselytization",194],"23.2":["Self-defense",195],"23.3":["Individuality",196],"23.4":["Fragmentation",197],"23.5":["Assimilation",198],"23.6":["Fusion",199],"24.1":["The Sin of omission",202],"24.2":["Recognition",203],"24.3":["The Addict",203],"24.4":["The Hermit",204],"24.5":["Confession",204],"24.6":["The Gift Horse",205],"25.1":["Selflessness",208],"25.2":["The Existentialist",210],"25.3":["Sensibility",211],"25.4":["Survival",213],"25.5":["Recuperation",214],"25.6":["Ignorance",215],"26.1":["A Bird in the hand",219],"26.2":["The Lessons of History",220],"26.3":["Influence",222],"26.4":["Censorship",223],"26.5":["Adaptability",224],"26.6":["Authority",225],"27.1":["Selfishness",228],"27.2":["Self-sufficiency",229],"27.3":["Greed",230],"27.4":["Generosity",232],"27.5":["The Executor",233],"27.6":["Wariness",234],"28.1":["Preparation",237],"28.2":["Shaking hands with the Devil",238],"28.3":["Adventurism",238],"28.4":["Holding on",239],"28.5":["Treachery",240],"28.6":["Blaze of Glory",241],"29.1":["The Draftee",242],"29.2":["Assessment",243],"29.3":["Evaluation",244],"29.4":["Directness",246],"29.5":["Overreach",247],"29.6":["Confusion",249],"30.1":["Composure",252],"30.2":["Pragmatism",253],"30.3":["Resignation",254],"30.4":["Burnout",255],"30.5":["Irony",256],"30.6":["Enforcement",257],"31.1":["Manifestation",259],"31.2":["Arrogance",260],"31.3":["Selectivity",262],"31.4":["Intent",263],"31.5":["Self-righteousness",264],"31.6":["Application",266],"32.1":["Conservation",268],"32.2":["Restraint",270],"32.3":["Lack of continuity",271],"32.4":["Right is might",272],"32.5":["Flexibility",272],"32.6":["Tranquility",274],"33.1":["Avoidance",277],"33.2":["Surrender",278],"33.3":["Spirit",279],"33.4":["Dignity",280],"33.5":["Timing",281],"33.6":["Disassociation",283],"34.1":["The Bully",286],"34.2":["Momentum",287],"34.3":["Machismo",288],"34.4":["Triumph",289],"34.5":["Annihilation",290],"34.6":["Common sense",290],"35.1":["Humility",292],"35.2":["Creative block",293],"35.3":["Collaboration",294],"35.4":["Hunger",295],"35.5":["Altruism",296],"35.6":["Rectification",297],"36.1":["Resistance",300],"36.2":["Support",301],"36.3":["Transition",301],"36.4":["Espionage",302],"36.5":["The Underground",303],"36.6":["Justice",303],"37.1":["The Mother/Father",306],"37.2":["Responsibility",306],"37.3":["Evenhandedness",307],"37.4":["Leadership by example",308],"37.5":["Love",309],"37.6":["Purpose",309],"38.1":["Qualification",312],"38.2":["Politeness",313],"38.3":["Alliance",314],"38.4":["Investigation",314],"38.5":["Alienation",315],"38.6":["Misunderstanding",317],"39.1":["Disengagement",321],"39.2":["Confrontation",322],"39.3":["Responsibility",323],"39.4":["Temperance",324],"39.5":["Single-mindedness",325],"39.6":["The Troubleshooter",326],"40.1":["Recuperation",331],"40.2":["Resoluteness",332],"40.3":["Humility",333],"40.4":["Organization",335],"40.5":["Rigidity",335],"40.6":["Decapitation",336],"41.1":["Reasonableness",340],"41.2":["Caution",342],"41.3":["Efficiency",343],"41.4":["Correction",345],"41.5":["Authorization",346],"41.6":["Contagion",349],"42.1":["Diversification",354],"42.2":["Identification",355],"42.3":["Trial and Error",356],"42.4":["The Middle Man",357],"42.5":["Self-actualization",358],"42.6":["Nurturing",359],"43.1":["Patience",361],"43.2":["Dedication",362],"43.3":["Expediency",363],"43.4":["The One-track-mind",364],"43.5":["Progression",364],"43.6":["Breakthrough",365],"44.1":["Conditions",368],"44.2":["Management",369],"44.3":["Interference",370],"44.4":["Honesty",371],"44.5":["Manipulation",372],"44.6":["Aloofness",373],"45.1":["Canvassing",375],"45.2":["Consensus",376],"45.3":["Exclusion",377],"45.4":["Direction",378],"45.5":["Leadership",379],"45.6":["Reconsideration",379],"46.1":["Being discovered",383],"46.2":["The Prima Donna",384],"46.3":["Projection",385],"46.4":["Impact",386],"46.5":["Pacing",387],"46.6":["Integrity",388],"47.1":["Taking stock",393],"47.2":["Ambition",393],"47.3":["Self-Oppression",394],"47.4":["Repression",396],"47.5":["The Saint",397],"47.6":["Futility",397],"48.1":["Insignificance",401],"48.2":["Degeneracy",402],"48.3":["Incommunicado",403],"48.4":["Restructuring",404],"48.5":["Action",405],"48.6":["Self-fulfillment",406],"49.1":["The Law of necessity",408],"49.2":["The Last Resort",409],"49.3":["Popular discontent",410],"49.4":["Platform",411],"49.5":["Organization",412],"49.6":["Attraction",413],"50.1":["The Immigrant",416],"50.2":["Determination",417],"50.3":["Adaptability",418],"50.4":["Corruption",419],"50.5":["Consistency",420],"50.6":["Leadership",421],"51.1":["Reference",423],"51.2":["Withdrawal",425],"51.3":["Adaptation",425],"51.4":["Limitation",426],"51.5":["Symmetry",427],"51.6":["Separation",429],"52.1":["Think before you speak",431],"52.2":["Concern",433],"52.3":["Controls",433],"52.4":["Self-discipline",434],"52.5":["Explanation",435],"52.6":["Peacefulness",438],"53.1":["Accumulation",440],"53.2":["Momentum",442],"53.3":["Practicality",442],"53.4":["Assuredness",443],"53.5":["Assertion",444],"53.6":["Phasing",446],"54.1":["Influence",449],"54.2":["Discretion",449],"54.3":["Covert interaction",450],"54.4":["Enlightenment/Endarkenment",451],"54.5":["Magnanimity",452],"54.6":["Selectivity",453],"55.1":["Cooperation",455],"55.2":["Distrust",456],"55.3":["Innocence",457],"55.4":["Assimilation",458],"55.5":["Growth",460],"55.6":["Selfishness",461],"56.1":["Quality",464],"56.2":["Linkage",465],"56.3":["Alienation",466],"56.4":["Expediency",468],"56.5":["Attracting attention",469],"56.6":["Caution",472],"57.1":["Confusion",476],"57.2":["Cleansing",477],"57.3":["Acuteness",478],"57.4":["The Director",479],"57.5":["Progression",479],"57.6":["Utilization",480],"58.1":["Love of life",483],"58.2":["Perversion",484],"58.3":["Electricity",485],"58.4":["Focusing",486],"58.5":["Defense",487],"58.6":["Carried away",488],"59.1":["The preemptive strike",491],"59.2":["Shyness",493],"59.3":["Openness",494],"59.4":["Brotherhood/Sisterhood",495],"59.5":["The Femme fatale or Casanova",496],"59.6":["The One Night Stand",497],"60.1":["Acceptance",500],"60.2":["Decisiveness",500],"60.3":["Conservatism",501],"60.4":["Resourcefulness",502],"60.5":["Leadership",503],"60.6":["Rigidity",505],"61.1":["Occult knowledge",508],"61.2":["Natural brilliance",509],"61.3":["Interdependence",510],"61.4":["Research",511],"61.5":["Influence",512],"61.6":["Appeal",513],"62.1":["Routine",517],"62.2":["Restraint",519],"62.3":["Discovery",520],"62.4":["Asceticism",523],"62.5":["Metamorphosis",524],"62.6":["Self-discipline",527],"63.1":["Composure",528],"63.2":["Structuring",529],"63.3":["Continuance",530],"63.4":["Memory",531],"63.5":["Affirmation",532],"63.6":["Nostalgia",534],"64.1":["Conditions",538],"64.2":["Qualification",538],"64.3":["Overextension",539],"64.4":["Conviction",540],"64.5":["Promise",540],"64.6":["Victory",541]};
+
+// Ra Uru Hu's English terms shown beside the Chinese
+const EN = {
+  type: { Generator: 'Generator', ManifestingGenerator: 'Manifesting Generator', Manifestor: 'Manifestor', Projector: 'Projector', Reflector: 'Reflector' },
+  strategy: { Generator: 'To Respond', ManifestingGenerator: 'To Respond', Manifestor: 'To Inform', Projector: 'Wait for the Invitation', Reflector: 'Wait a Lunar Cycle' },
+  notSelf: { Generator: 'Frustration', ManifestingGenerator: 'Frustration', Manifestor: 'Anger', Projector: 'Bitterness', Reflector: 'Disappointment' },
+  auth: { Emotional: 'Emotional (Solar Plexus) Authority', Sacral: 'Sacral Authority', Splenic: 'Splenic Authority', EgoManifested: 'Ego Manifested Authority', EgoProjected: 'Ego Projected Authority', SelfProjected: 'Self-Projected Authority', Mental: 'Mental / Environmental (No Inner Authority)', Lunar: 'Lunar Authority' },
+  line: { 1: 'Investigator', 2: 'Hermit', 3: 'Martyr', 4: 'Opportunist', 5: 'Heretic', 6: 'Role Model' },
+  defn: { 0: 'No Definition', 1: 'Single Definition', 2: 'Split Definition', 3: 'Triple Split Definition', 4: 'Quadruple Split Definition' },
+  center: { Head: 'Head Center', Ajna: 'Ajna Center', Throat: 'Throat Center', G: 'G Center', Heart: 'Heart (Ego) Center', Sacral: 'Sacral Center', SolarPlexus: 'Solar Plexus Center', Spleen: 'Spleen Center', Root: 'Root Center' },
+  cat: { Head: 'Pressure', Ajna: 'Awareness', Throat: 'Manifestation', G: 'Identity', Heart: 'Motor', Sacral: 'Motor', SolarPlexus: 'Motor / Awareness', Spleen: 'Awareness', Root: 'Pressure / Motor' },
+  q: { Head: "Thinking about things that don't matter", Ajna: 'Pretending to be mentally certain', Throat: 'Trying to attract attention', G: 'Trying to find direction and love', Heart: 'Trying to prove or improve yourself', Sacral: 'Not knowing when enough is enough', SolarPlexus: 'Avoiding confrontation and truth', Spleen: "Holding on to what isn't good for you", Root: 'Always in a hurry to be free' },
+  planet: { Sun: 'Sun', Earth: 'Earth', Moon: 'Moon', NorthNode: 'North Node', SouthNode: 'South Node', Mercury: 'Mercury', Venus: 'Venus', Mars: 'Mars', Jupiter: 'Jupiter', Saturn: 'Saturn', Uranus: 'Uranus', Neptune: 'Neptune', Pluto: 'Pluto' },
+  circuit: { '個體・覺知迴路': 'Individual · Knowing', '個體・中央迴路': 'Individual · Centering', '集體・理解（邏輯）迴路': 'Collective · Understanding (Logic)', '集體・感知（抽象）迴路': 'Collective · Sensing (Abstract)', '部落・意志力迴路': 'Tribal · Ego', '部落・防護迴路': 'Tribal · Defense', '整合通道群': 'Integration' }
+};
+const en = t => `<span class="en">${t}</span>`;
+
+let CURRENT = null;
+function render(r, name, tz, isSample) {
+  CURRENT = r;
+  const T = TYPES[r.type], Au = AUTH[r.authority], [pl, dl] = r.profile, G = GEOMETRY[r.geometry], Df = DEFN[Math.min(r.definition, 4)];
+  const chKey = ([a, b]) => `${a}-${b}`;
+  const rows = HD.PLANETS.map(p => `<tr><td class="d gl"><button type="button" class="gl-btn d" data-side="des" data-p="${p}" aria-label="查看設計${PLANET_ZH[p][1]} ${r.des[p].gate}.${r.des[p].line}">${r.des[p].gate}.${r.des[p].line}</button></td><td class="planet" style="text-align:center">${PLANET_ZH[p][0]} ${PLANET_ZH[p][1]} <span class="en inline">${EN.planet[p]}</span></td><td class="p gl"><button type="button" class="gl-btn" data-side="pers" data-p="${p}" aria-label="查看個性${PLANET_ZH[p][1]} ${r.pers[p].gate}.${r.pers[p].line}">${r.pers[p].gate}.${r.pers[p].line}</button></td></tr>`).join('');
+  const chs = r.channels.map(c => {
+    const [a, b] = c, k = chKey(c), info = CH[k];
+    const src = g => r.gates[g].p && r.gates[g].d ? '個性＋設計' : r.gates[g].p ? '個性' : '設計';
+    return `<div class="ch"><span class="n">${k}</span><div><b>${info[0]}</b>　<span class="src">${info[1]}</span><div>${info[4]}的設計 <span class="src">（a design of ${info[5]}）</span></div><div class="src">${info[2]}（${EN.circuit[info[2]]}）　·　${CH_TYPE[info[3]]}　·　${CENTERS[HD.GATE_CENTER[a]].n} ↔ ${CENTERS[HD.GATE_CENTER[b]].n}　·　閘門 ${a}（${src(a)}）、${b}（${src(b)}）</div></div></div>`;
+  }).join('') || '<p class="lead">你沒有完整的通道，九個能量中心都是開放的。</p>';
+  const inChannel = new Set(r.channels.flat());
+  const hanging = Object.keys(r.gates).map(Number).filter(g => !inChannel.has(g)).sort((a, b) => a - b);
+  const centers = CENTER_ORDER.map(c => {
+    const C = CENTERS[c], on = r.defined.has(c);
+    return `<div class="center ${on ? 'on' : ''}"><h3>${C.n}${en(EN.center[c])}</h3><span class="st">${on ? '有定義 Defined' : '開放 Open'}　·　${C.cat}（${EN.cat[c]}）　·　${C.theme}</span><p>${on ? C.on : C.off}</p>${on ? '' : `<p class="q">留意：${C.q}${en(EN.q[c])}</p>`}</div>`;
+  }).join('');
+
+  $('#out').innerHTML = `
+  <div class="banner fade"><h2>${esc(name || '你的人類圖')}</h2>${isSample ? '<span class="tag">範例資料</span>' : ''}${r.birth ? `<span class="tag">${esc(fmtLocal(r.birth, tz))}</span>` : '<span class="tag">由圖檔資料產生</span>'}</div>
+  <div class="summary fade">
+    <div class="cell"><span class="label">類型 Type</span><span class="v">${T.n}</span><span class="s">${EN.type[r.type]}</span></div>
+    <div class="cell"><span class="label">策略 Strategy</span><span class="v">${T.strategy}</span><span class="s">${EN.strategy[r.type]}</span></div>
+    <div class="cell"><span class="label">內在權威 Inner Authority</span><span class="v">${Au.n}</span><span class="s">${EN.auth[r.authority]}</span></div>
+    <div class="cell"><span class="label">人生角色 Profile</span><span class="v">${pl}/${dl}</span><span class="s">${LINES[pl][0]}／${LINES[dl][0]}<br>${EN.line[pl]} / ${EN.line[dl]}</span></div>
+    <div class="cell"><span class="label">定義 Definition</span><span class="v">${Df[0]}</span><span class="s">${EN.defn[Math.min(r.definition, 4)]}</span></div>
+    <div class="cell"><span class="label">非自己主題 Not-Self Theme</span><span class="v">${T.ns}</span><span class="s">${EN.notSelf[r.type]}</span></div>
+  </div>
+  <div class="sheet fade">
+    <div class="panel graph">${BG.draw(r)}
+      <div class="legend"><span><i class="sw" style="background:var(--pers)"></i>個性 Personality（黑）</span><span><i class="sw" style="background:var(--design)"></i>設計 Design（紅）</span><span><i class="sw" style="background:repeating-linear-gradient(90deg,var(--design) 0 4px,var(--pers) 4px 8px)"></i>紅黑都有</span><span><i class="dot"></i>啟動的閘門</span><span>上色＝有定義的能量中心</span></div>
+    </div>
+    <div class="panel">
+      <p class="label" style="margin-bottom:6px">13 個星體的閘門與爻　·　左欄<span style="color:var(--design)">設計水晶（紅・潛意識）</span>　右欄個性水晶（黑・意識）</p>
+      <table><thead><tr><th class="d">設計 Design</th><th style="text-align:center">星體 Planet</th><th class="p">個性 Personality</th></tr></thead><tbody>${rows}</tbody></table>
+      <div id="lineInfo" class="lineinfo" aria-live="polite"><p class="src">點一下表格中的閘門與爻，查看 Ra 給這一爻的名稱。</p></div>
+      ${r.design ? `<p class="label" style="margin-top:10px">設計時間 Design Date：${esc(fmtLocal(r.design, tz))}</p>` : ''}
+    </div>
+  </div>
+  <section>
+    <h2>回到策略與權威 <span class="en inline">Strategy &amp; Authority</span></h2>
+    <p class="lead">將制約轉成滋養你的事物，而不是帶來痛苦的事物，方法是回到策略與權威。</p>
+    <div class="cards">
+      <article class="card"><span class="label">類型與策略</span><h3>${T.n}：${T.strategy}${en(EN.type[r.type] + ': ' + EN.strategy[r.type])}</h3><p>${T.text}</p><div class="k"><span>非自己主題 <b>${T.ns}</b>（${EN.notSelf[r.type]}）</span></div></article>
+      <article class="card"><span class="label">內在權威</span><h3>${Au.n}${en(EN.auth[r.authority])}</h3><p>${Au.text}</p></article>
+      <article class="card"><span class="label">人生角色</span><h3>${pl}/${dl}　${LINES[pl][0]}／${LINES[dl][0]}${en(EN.line[pl] + ' / ' + EN.line[dl])}</h3><p><b>第 ${pl} 爻（個性・意識）${LINES[pl][0]} ${EN.line[pl]}</b><span class="en">${LINES[pl][2]}</span>${LINES[pl][1]}</p><p><b>第 ${dl} 爻（設計・潛意識）${LINES[dl][0]} ${EN.line[dl]}</b><span class="en">${LINES[dl][2]}</span>${LINES[dl][1]}</p><p class="src" style="font-size:12px;color:var(--muted)">人生角色由個性太陽與設計太陽所在的爻組成。</p></article>
+      <article class="card"><span class="label">定義</span><h3>${Df[0]}${en(EN.defn[Math.min(r.definition, 4)])}</h3><p>${Df[1]}</p></article>
+    </div>
+  </section>
+  <section>
+    <h2>九大能量中心 <span class="en inline">The Nine Centers</span></h2>
+    <p class="lead">有定義的能量中心是可信任的、穩定的能量；開放的能量中心「近朱者赤、近墨者黑」，是學習的地方，也是容易被制約的地方。</p>
+    <div class="centers">${centers}</div>
+  </section>
+  <section>
+    <h2>你的通道 <span class="en inline">Channels</span></h2>
+    <div class="panel chlist">${chs}</div>
+    ${hanging.length ? `<p class="label">其他啟動的閘門（懸掛閘門 Hanging Gates）</p><div class="gates">${hanging.map(g => `<span class="gate${r.gates[g].d && !r.gates[g].p ? ' d' : ''}">${g}</span>`).join('')}</div>` : ''}
+  </section>`;
+}
+
+
+function showLine(side, planet) {
+  const r = CURRENT; if (!r) return;
+  const a = r[side][planet], g = a.gate, l = a.line, key = `${g}.${l}`;
+  const G = GATE_INFO[g], Ln = LINE_INFO[key], center = CENTERS[HD.GATE_CENTER[g]];
+  const sideZh = side === 'des' ? '設計 Design（紅・潛意識）' : '個性 Personality（黑・意識）';
+  document.querySelectorAll('.gl-btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.side === side && b.dataset.p === planet)));
+  document.getElementById('lineInfo').innerHTML = `
+    <p class="label">${PLANET_ZH[planet][0]} ${PLANET_ZH[planet][1]} ${EN.planet[planet]}　·　${sideZh}</p>
+    <h3><span class="gl-big${side === 'des' ? ' d' : ''}">${key}</span> ${Ln[0]}</h3>
+    <dl>
+      <dt>閘門 ${g}</dt><dd>${G[0]}卦　${G[1]}　·　${center.n}</dd>
+      <dt>第 ${l} 爻</dt><dd>${LINES[l][2]}（所有第 ${l} 爻的共通主題）</dd>
+      <dt>原文</dt><dd>The Rave I’Ching Line Companion，PDF 第 ${Ln[1]} 頁（閘門 ${g} 從第 ${G[2]} 頁開始）</dd>
+    </dl>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.gl-btn'); if (!b) return;
+  showLine(b.dataset.side, b.dataset.p);
+});
+
+// ---------- form ----------
+const tzSel = $('#tz');
+let here = 'Asia/Taipei'; try { here = Intl.DateTimeFormat().resolvedOptions().timeZone || here; } catch (e) {}
+const list = TZS.some(t => t[0] === here) ? TZS : [[here, '目前所在地'], ...TZS];
+tzSel.innerHTML = list.map(([v, l]) => `<option value="${v}">${l}（${v.split('/').pop().replace(/_/g, ' ')}）</option>`).join('');
+tzSel.value = 'Asia/Taipei';
+
+function run(name, date, time, tz, isSample) {
+  const [y, m, d] = date.split('-').map(Number), [h, mi] = time.split(':').map(Number);
+  const birth = HD.zonedToUtc(y, m, d, h, mi, tz);
+  render(HD.analyze(birth), name, tz, isSample);
+}
+$('#f').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = $('#err'); err.hidden = true;
+  const date = $('#dt').value, time = $('#tm').value;
+  if (!date || !time) { err.textContent = '請填入出生日期和時間。不確定時間的話，先填大概的時間，結果僅供參考。'; err.hidden = false; return; }
+  const yr = +date.slice(0, 4);
+  if (yr < 1900 || yr > 2100) { err.textContent = '請輸入 1900 到 2100 年之間的日期。'; err.hidden = false; return; }
+  try { run($('#nm').value.trim(), date, time, tzSel.value, false); $('#out').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  catch (ex) { err.textContent = '計算時發生問題，請重新整理頁面後再試一次。'; err.hidden = false; }
+});
+
+// ---------- read a bodygraph image ----------
+const OCR_SRC = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+const GL_RE = /^(\d{1,2})\.([1-6])$/;
+function loadScript(src) {
+  return new Promise((ok, bad) => { if (window.Tesseract) return ok(); const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('load')); document.head.appendChild(s); });
+}
+function setStatus(t) { $('#ocrStatus').textContent = t; }
+function buildGrid(des, pers) {
+  const g = $('#rvGrid');
+  g.innerHTML = '<span></span><span class="h d">設計 Design（紅）</span><span class="h">個性 Personality（黑）</span>' +
+    HD.PLANETS.map(p => `<span class="pl">${PLANET_ZH[p][0]} ${PLANET_ZH[p][1]}</span>` +
+      `<input id="rv-d-${p}" class="d" inputmode="decimal" autocomplete="off" aria-label="設計${PLANET_ZH[p][1]}" value="${des[p] || ''}">` +
+      `<input id="rv-p-${p}" inputmode="decimal" autocomplete="off" aria-label="個性${PLANET_ZH[p][1]}" value="${pers[p] || ''}">`).join('');
+  $('#review').hidden = false; $('#rvErr').hidden = true; $('#rvWarn').hidden = true;
+}
+function drawScaled(img, width) {
+  const scale = Math.max(1, Math.min(3, width / img.naturalWidth));
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.naturalWidth * scale); c.height = Math.round(img.naturalHeight * scale);
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+  x.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+function binarize(src) {
+  const c = document.createElement('canvas'); c.width = src.width; c.height = src.height;
+  const x = c.getContext('2d'); x.drawImage(src, 0, 0);
+  const d = x.getImageData(0, 0, c.width, c.height), a = d.data;
+  for (let i = 0; i < a.length; i += 4) { const v = Math.min(a[i], a[i + 1], a[i + 2]) < 170 ? 0 : 255; a[i] = a[i + 1] = a[i + 2] = v; }
+  x.putImageData(d, 0, 0);
+  return c;
+}
+// "29.1", "291", "730.1" (a symbol read as a digit) -> "29.1"
+function parseGL(t) {
+  const m = /(\d{1,2})\.(\d)/.exec(t);
+  if (m && +m[1] >= 1 && +m[1] <= 64 && +m[2] >= 1 && +m[2] <= 6) return `${+m[1]}.${m[2]}`;
+  const d = t.replace(/\D/g, '');
+  for (const s of [d, d.slice(0, -1), d.slice(1)]) {
+    if (s.length >= 2 && s.length <= 3) { const g = +s.slice(0, -1), l = +s.slice(-1); if (g >= 1 && g <= 64 && l >= 1 && l <= 6) return `${g}.${l}`; }
+  }
+  return '';
+}
+const median = a => a.slice().sort((p, q) => p - q)[a.length >> 1];
+// 1) find the two planet columns from numbers that contain a dot, 2) read each of the 13 rows on its own
+async function ocrChart(file) {
+  const url = URL.createObjectURL(file);
+  const img = await new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = url; });
+  URL.revokeObjectURL(url);
+  const raw = drawScaled(img, 2400);
+  const worker = await Tesseract.createWorker('eng');
+  try {
+    // 1) find the two planet columns: numbers with a dot, lined up by their right edge
+    await worker.setParameters({ tessedit_pageseg_mode: '11' });
+    const words = [];
+    const collect = data => (data.words || []).filter(w => /\d/.test(w.text))
+      .forEach(w => words.push({ t: w.text, r: w.bbox.x1, y: (w.bbox.y0 + w.bbox.y1) / 2, h: w.bbox.y1 - w.bbox.y0 }));
+    const findCols = () => {
+      const dotted = words.filter(w => /\d[.:,]\d/.test(w.t));
+      if (dotted.length < 4) return null;
+      const h = median(dotted.map(n => n.h));
+      const bins = {};
+      dotted.forEach(n => { const b = Math.round(n.r / 30); for (const k of [b - 1, b, b + 1]) (bins[k] ||= []).push(n); });
+      const cands = Object.values(bins).map(a => ({ r: median(a.map(n => n.r)), n: new Set(a.map(n => Math.round(n.y / h))).size }))
+        .filter(c => c.n >= 2).sort((a, b) => b.n - a.n);
+      const cols = [];
+      for (const c of cands) { if (cols.every(p => Math.abs(p.r - c.r) > h * 6)) cols.push(c); if (cols.length === 2) break; }
+      return cols.length === 2 ? { cols: cols.sort((a, b) => a.r - b.r), h } : null;
+    };
+    collect((await worker.recognize(binarize(raw))).data);
+    let found = findCols();
+    if (!found || found.cols.some(c => c.n < 3)) { collect((await worker.recognize(raw)).data); found = findCols(); }
+    if (!found) return null;
+    const { cols, h } = found;
+    // 2) the 13 rows are evenly spaced
+    const ys = words.filter(w => cols.some(c => Math.abs(w.r - c.r) < h * 1.5)).map(w => w.y).sort((a, b) => a - b);
+    const rows = []; ys.forEach(y => { if (!rows.length || y - rows[rows.length - 1] > h * 0.8) rows.push(y); });
+    if (rows.length < 2) return null;
+    const diffs = rows.slice(1).map((y, i) => y - rows[i]);
+    const g0 = Math.min(...diffs);
+    const gap = diffs.map(d => d / Math.max(1, Math.round(d / g0))).reduce((s, d) => s + d, 0) / diffs.length;
+    // 3) read each cell on its own
+    await worker.setParameters({ tessedit_pageseg_mode: '7', tessedit_char_whitelist: '0123456789.' });
+    const readCell = async (r, y, shift) => {
+      const x1 = r + h * (0.3 + shift), x0 = x1 - h * 4.9, y0 = y - gap * 0.45, y1 = y + gap * 0.45, S = 3;
+      const cc = document.createElement('canvas'); cc.width = Math.round((x1 - x0) * S); cc.height = Math.round((y1 - y0) * S);
+      const g = cc.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cc.width, cc.height);
+      g.drawImage(raw, x0, y0, x1 - x0, y1 - y0, 0, 0, cc.width, cc.height);
+      return parseGL((await worker.recognize(cc)).data.text || '');
+    };
+    const out = [];
+    for (const c of cols) {
+      const col = [];
+      for (let i = 0; i < 13; i++) {
+        const y = rows[0] + i * gap;
+        let v = await readCell(c.r, y, 0);
+        for (const shift of [-0.6, 0.6]) { if (v) break; v = await readCell(c.r, y, shift); }
+        col.push(v);
+      }
+      out.push(col);
+    }
+    return out; // [design column, personality column]
+  } finally { await worker.terminate(); }
+}
+async function readImage(file) {
+  if (!file || !/^image\//.test(file.type)) { setStatus('請選擇圖片檔，例如 PNG 或 JPG。'); return; }
+  try {
+    setStatus('正在載入文字辨識元件，第一次使用需要一點時間……');
+    await loadScript(OCR_SRC);
+    setStatus('正在辨識圖片中的數字，大約需要 10 到 30 秒……');
+    const cols = await ocrChart(file);
+    if (!cols) { setStatus('找不到左右兩欄的星體資料。請確認圖片包含兩欄「閘門.爻」數字，或改用手動輸入。'); buildGrid({}, {}); return; }
+    const des = {}, pers = {};
+    HD.PLANETS.forEach((p, i) => { des[p] = cols[0][i]; pers[p] = cols[1][i]; });
+    const opp = v => { const [g, l] = v.split('.'); return `${HD.opposite(+g)}.${l}`; };
+    for (const o of [des, pers]) {
+      for (const [a, b] of [['Sun', 'Earth'], ['NorthNode', 'SouthNode']]) {
+        if (o[a] && !o[b]) o[b] = opp(o[a]);
+        else if (o[b] && !o[a]) o[a] = opp(o[b]);
+      }
+    }
+    const n = [...cols[0], ...cols[1]].filter(Boolean).length;
+    setStatus(n === 26 ? '已讀出 26 個數字。請對照圖片檢查後，按「用這些資料畫圖」。' : `讀出 ${n} 個數字（應該有 26 個）。請對照圖片補上或修正空白和錯誤的格子。`);
+    buildGrid(des, pers);
+  } catch (ex) {
+    setStatus('辨識時發生問題，可能是網路無法載入辨識元件。請稍後再試，或改用手動輸入。');
+    buildGrid({}, {});
+  }
+}
+$('#img').addEventListener('change', e => readImage(e.target.files[0]));
+$('#manual').addEventListener('click', () => { setStatus(''); buildGrid({}, {}); $('#rvGrid input').focus(); });
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => readImage(e.dataTransfer.files[0]));
+document.addEventListener('paste', e => {
+  const f = [...(e.clipboardData?.files || [])].find(f => /^image\//.test(f.type));
+  if (f) { e.preventDefault(); readImage(f); }
+});
+$('#review').addEventListener('submit', e => {
+  e.preventDefault();
+  const pers = {}, des = {}, bad = [];
+  for (const p of HD.PLANETS) {
+    for (const [side, obj, lab] of [['d', des, '設計'], ['p', pers, '個性']]) {
+      const el = $(`#rv-${side}-${p}`), m = GL_RE.exec(el.value.trim());
+      const ok = m && +m[1] >= 1 && +m[1] <= 64;
+      el.setAttribute('aria-invalid', String(!ok));
+      if (ok) obj[p] = { gate: +m[1], line: +m[2] }; else bad.push(`${lab}${PLANET_ZH[p][1]}`);
+    }
+  }
+  const err = $('#rvErr');
+  if (bad.length) { err.textContent = `這些格子的格式不正確：${bad.join('、')}。請輸入「閘門.爻」，閘門 1–64，爻 1–6。`; err.hidden = false; return; }
+  err.hidden = true;
+  const warns = [];
+  for (const [obj, lab] of [[pers, '個性'], [des, '設計']]) {
+    if (obj.Earth.gate !== HD.opposite(obj.Sun.gate) || obj.Earth.line !== obj.Sun.line) warns.push(`${lab}的地球通常和太陽相對（閘門 ${HD.opposite(obj.Sun.gate)}、同一爻），請再確認一次。`);
+    if (obj.SouthNode.gate !== HD.opposite(obj.NorthNode.gate) || obj.SouthNode.line !== obj.NorthNode.line) warns.push(`${lab}的月之南交通常和月之北交相對（閘門 ${HD.opposite(obj.NorthNode.gate)}、同一爻），請再確認星體的順序。`);
+  }
+  const w = $('#rvWarn'); w.innerHTML = warns.map(t => `<li>${t}</li>`).join(''); w.hidden = !warns.length;
+  render(HD.analyzeActs(pers, des), $('#rvName').value.trim(), null, false);
+  $('#out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+function boot() {
+  if (typeof Astronomy === 'undefined') { $('#out').innerHTML = '<p class="err">天文計算元件沒有載入，請檢查網路後重新整理頁面。</p>'; return; }
+  $('#dt').value = '1990-06-15'; $('#tm').value = '14:30';
+  run('範例：小安', '1990-06-15', '14:30', 'Asia/Taipei', true);
+  $('#nm').value = ''; $('#dt').value = ''; $('#tm').value = '';
+}
+boot();
+</script>
+</body>
+</html>
